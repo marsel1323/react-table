@@ -1,8 +1,9 @@
 .App {
     display: grid;
-
     grid: 'header header' 71px 'details table' 1fr
     / 275px 1fr;
+
+    margin: 20px 50px;
 }
 
 .header {
@@ -18,8 +19,8 @@
 }
 
 table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
+    border: 1px solid black;
+    border-collapse: collapse;
 }
 
 .details {
