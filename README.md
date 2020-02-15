@@ -1,11 +1,5 @@
-# react-table
+#react-table
 
-npm install
+Install all dependencies: `npm install`
 
-npm run dev:build-server
-
-npm run dev:build-client
-
-npm run dev
-
-npm run test
+Run the project: `npm start`

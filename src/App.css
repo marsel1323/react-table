@@ -1,0 +1,29 @@
+.App {
+    display: grid;
+
+    grid: 'header header' 71px 'details table' 1fr
+    / 275px 1fr;
+}
+
+.header {
+    display: grid;
+    grid-area: header;
+    align-items: center;
+}
+
+.table {
+    display: grid;
+    grid-area: table;
+    align-items: center;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.details {
+    display: grid;
+    grid-area: details;
+    align-items: center;
+}
