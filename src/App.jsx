@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { selectFillTextDatas } from './redux/fillText/fillText.selectors';
 import { fetchFillTextDataStart } from './redux/fillText/fillText.actions';
 
+import Table from './components/table/table.component';
+
 function App({ fillTextData, fetchFillTextData }) {
   useEffect(() => {
     fetchFillTextData();
@@ -12,32 +14,7 @@ function App({ fillTextData, fetchFillTextData }) {
   return (
     <div className="App">
       <header className="header">Header</header>
-      <div className="table">
-        <table>
-          <thead>
-            <tr>
-              <th>***</th>
-              <th>id</th>
-              <th>firstName</th>
-              <th>lastName</th>
-              <th>email</th>
-              <th>phone</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fillTextData.map((data) => (
-              <tr key={data.id}>
-                <td>*</td>
-                <td>{data.id}</td>
-                <td>{data.firstName}</td>
-                <td>{data.lastName}</td>
-                <td>{data.email}</td>
-                <td>{data.phone}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table data={fillTextData} />
       <br />
       <div className="details">
         Details
