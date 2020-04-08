@@ -35,10 +35,13 @@ class App extends React.Component {
           filterQuery: '',
         },
       },
+
+      selectedUser: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.selectRow = this.selectRow.bind(this);
   }
 
   async componentDidMount() {
@@ -82,19 +85,26 @@ class App extends React.Component {
   }
 
   handleChange(e) {
-    const { name: key, value } = e.target;
+    const { name, value } = e.target;
     const { fillTextData } = this.state;
     const filteredData = fillTextData.filter(
-      (data) => data[key]
+      (data) => data[name]
         .toString()
         .toLowerCase()
-        .includes(value),
+        .includes(value.toString().toLowerCase()),
     );
     this.setState({ filteredData });
   }
 
+  selectRow(user) {
+    console.log(user);
+    this.setState({
+      selectedUser: user,
+    });
+  }
+
   render() {
-    const { fillTextData, headers, filteredData } = this.state;
+    const { selectedUser, headers, filteredData } = this.state;
     return (
       <div className="App">
         <header className="header">Header</header>
@@ -135,14 +145,14 @@ class App extends React.Component {
                               <div>
                                 <span
                                   style={{
-                                    color: headers[key].sortDirection==='ASC' ? 'red' : '',
+                                    color: headers[key].sortDirection === 'ASC' ? 'red' : '',
                                   }}
                                 >
                                   ▲
                                 </span>
                                 <span
                                   style={{
-                                    color: headers[key].sortDirection==='DESC' ? 'red' : '',
+                                    color: headers[key].sortDirection === 'DESC' ? 'red' : '',
                                   }}
                                 >
                                   ▼
@@ -156,7 +166,7 @@ class App extends React.Component {
                   </thead>
                   <tbody>
                     {filteredData.map((data) => (
-                      <tr key={data.email}>
+                      <tr key={data.email} onClick={() => this.selectRow(data)}>
                         <td>*</td>
                         <td>{data.id}</td>
                         <td>{data.firstName}</td>
@@ -173,11 +183,38 @@ class App extends React.Component {
               <div>Loading...</div>
             )
         }
-
-        <br />
-        <div className="details">
-          Details
-        </div>
+        {
+          selectedUser ? (
+            <div className="details">
+              <p>
+                Selected user:
+                <b>
+                  {selectedUser.firstName}
+                  {' '}
+                  {selectedUser.lastName}
+                </b>
+              </p>
+              <p>Description:</p>
+              <textarea cols="30" rows="10" defaultValue={selectedUser.description} />
+              <p>
+                Address:
+                <b>{selectedUser.address.streetAddress}</b>
+              </p>
+              <p>
+                City:
+                <b>{selectedUser.address.city}</b>
+              </p>
+              <p>
+                Province/State:
+                <b>{selectedUser.address.state}</b>
+              </p>
+              <p>
+                ZIP:
+                <b>{selectedUser.address.zip}</b>
+              </p>
+            </div>
+          ) : 'Please, select user'
+        }
       </div>
     );
   }
