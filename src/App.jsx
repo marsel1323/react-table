@@ -10,11 +10,14 @@ class App extends React.Component {
       fillTextData: null,
       filteredData: null,
 
-      sortDirections: ['DESC', 'ASC'],
+      sortDirections: Object.freeze({
+        DESC: 'DESC',
+        ASC: 'ASC',
+        DEFAULT: 'DEFAULT',
+      }),
 
       headers: {
         id: {
-          sorted: false,
           sortDirection: null,
           filterQuery: '',
         },
@@ -67,21 +70,48 @@ class App extends React.Component {
       },
     };
 
-    console.log(newHeaders);
     this.setState({ headers: newHeaders });
   }
 
   handleClick(key) {
     this.updateHeaders(key);
 
-    const { fillTextData, headers } = this.state;
-
-    const sortedData = fillTextData.sort((a, b) => {
-      if (a[key] > b[key]) return headers[key].sortDirection ? -1 : 1;
-      if (a[key] < b[key]) return headers[key].sortDirection ? 1 : -1;
-      return 0;
+    const { fillTextData, headers, sortDirections } = this.state;
+    let sortDirection;
+    if (!headers[key].sortDirection || headers[key].sortDirection === sortDirections.DEFAULT) {
+      sortDirection = sortDirections.DESC;
+    } else if (headers[key].sortDirection === sortDirections.DESC) {
+      sortDirection = sortDirections.ASC;
+    } else {
+      sortDirection = sortDirections.DEFAULT;
+    }
+    this.setState({
+      headers: {
+        ...headers,
+        [key]: {
+          ...headers[key],
+          sortDirection,
+        },
+      },
     });
-    this.setState({ fillTextData: sortedData });
+
+    let sortedData = [...fillTextData];
+    if (sortDirection === sortDirections.DESC) {
+      sortedData = sortedData.sort((a, b) => {
+        if (a[key] > b[key]) return 1;
+        if (a[key] < b[key]) return -1;
+        return 0;
+      });
+    }
+
+    if (sortDirection === sortDirections.ASC) {
+      sortedData = sortedData.sort((a, b) => {
+        if (a[key] > b[key]) return -1;
+        if (a[key] < b[key]) return 1;
+        return 0;
+      });
+    }
+    this.setState({ filteredData: sortedData });
   }
 
   handleChange(e) {
@@ -97,7 +127,6 @@ class App extends React.Component {
   }
 
   selectRow(user) {
-    console.log(user);
     this.setState({
       selectedUser: user,
     });
