@@ -45,6 +45,7 @@ class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.selectRow = this.selectRow.bind(this);
+    this.sortAndFilter = this.sortAndFilter.bind(this);
   }
 
   async componentDidMount() {
@@ -85,15 +86,6 @@ class App extends React.Component {
     } else {
       sortDirection = sortDirections.DEFAULT;
     }
-    this.setState({
-      headers: {
-        ...headers,
-        [key]: {
-          ...headers[key],
-          sortDirection,
-        },
-      },
-    });
 
     let sortedData = [...fillTextData];
     if (sortDirection === sortDirections.DESC) {
@@ -112,18 +104,50 @@ class App extends React.Component {
       });
     }
     this.setState({ filteredData: sortedData });
+    this.setState({
+      headers: {
+        ...headers,
+        [key]: {
+          ...headers[key],
+          sortDirection,
+        },
+      },
+    });
+  }
+
+  sortAndFilter(key, value) {
+    const { headers, fillTextData } = this.state;
+    console.log({ headers });
+    console.log({ key, value });
+    const sortingValue = value.toString().toLowerCase();
+    const filteredData = fillTextData.filter(
+      (data) => data[key]
+        .toString()
+        .toLowerCase()
+        .includes(sortingValue),
+    );
+    return filteredData;
   }
 
   handleChange(e) {
     const { name, value } = e.target;
-    const { fillTextData } = this.state;
-    const filteredData = fillTextData.filter(
-      (data) => data[name]
-        .toString()
-        .toLowerCase()
-        .includes(value.toString().toLowerCase()),
-    );
-    this.setState({ filteredData });
+    const { headers } = this.state;
+
+    this.setState({
+      headers: {
+        ...headers,
+        [name]: {
+          ...headers[name],
+          filterQuery: value,
+        },
+      },
+    });
+
+    const data = this.sortAndFilter(name, value);
+    console.log({ data });
+    this.setState({
+      filteredData: data,
+    });
   }
 
   selectRow(user) {
